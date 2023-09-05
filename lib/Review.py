@@ -12,3 +12,14 @@ class Review(Base):
     star_rating = Column(Integer(), nullable=False)
     customer = relationship("Customer", back_populates="reviews")
     restaurant = relationship("Restaurant", back_populates="reviews")
+
+    @property
+    def __repr__(self):
+        return f'Review(id={self.id}, ' + \
+            f'restaurant_id={self.restaurant_id}, ' + \
+            f'Customer_id={self.Customer_id}, ' + \
+            f'star_rating={self.star_rating})'
+    
+    @property
+    def full_review(self):
+        return f'Review for {self.restaurant.name} by {self.customer.full_name}: {self.star_rating} stars.'
