@@ -14,3 +14,8 @@ class Customer(Base):
 
     reviews = relationship('Review', back_populates='customer')
     restaurant = association_proxy("reviews", 'restaurant_review', creator=lambda v: Review(restaurant_review=v))
+
+    def __repr__(self):
+        return f'Customer(id={self.id}, ' + \
+            f'first_names={self.first_names}, ' + \
+            f'last_name={self.last_name})'
