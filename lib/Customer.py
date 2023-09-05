@@ -1,4 +1,4 @@
-from .database import Base
+from .database import Base, SessionLocal
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -19,3 +19,28 @@ class Customer(Base):
         return f'Customer(id={self.id}, ' + \
             f'first_names={self.first_names}, ' + \
             f'last_name={self.last_name})'
+    
+    @property
+    def favorite_restaurant(self):
+        favourite = None
+        highest_rating = 0
+
+        for review in self.reviews:
+            if review.star_rating > highest_rating:
+                highest_rating = review.star_rating
+                favourite = review.restaurant
+
+        return favourite
+    
+    @property
+    def add_review(self,restaurant,rating):
+        review = Review(restaurant_review=restaurant,customer_id=self.id,star_rating=rating)
+        SessionLocal.add(review)
+        SessionLocal.commit()
+
+    @property
+    def delete_reviews(self):
+        pending_delete = SessionLocal.query(Review).filter(Review.customer_id == self.id)
+        pending_delete.delete()
+        SessionLocal.commit()
+        
